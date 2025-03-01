@@ -1,6 +1,6 @@
 import './index.css'; 
 
-export default function DesignedButton(props) {
+export default function KurtTest(props) {
     return(
         <div>
             <button onClick={props.clickFunction} style={styles.button}>

@@ -1,12 +1,12 @@
 import './index.css'; 
 
-export default function KurtTest(props) {
+export default function DesignedButton(props) {
     return(
         <div>
             <button onClick={props.clickFunction} style={styles.button}>
                 <div style={styles.imageContainer}>
-                    <img src="/uiElements/buttonBlue.png" alt="Buy Factory" style={styles.image} />
-                <div style={styles.textOverlay}>Buy Factory</div>
+                    <img src={`/uiElements/button${props.type}.png`} alt="img not found" style={styles.image} />
+                <div style={styles.textOverlay}>{props.text}</div>
                 </div>
             </button>
         </div>
@@ -25,8 +25,10 @@ const styles = {
       display: 'inline-block',
     },
     image: {
-      width: '100px', // Adjust the size of the image
-      height: 'auto',
+      // width: '100px', // Adjust the size of the image
+      width: '18vw',
+      height: '3.125rem',
+      // height: 'auto',
     },
     textOverlay: {
       position: 'absolute',
