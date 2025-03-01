@@ -1,12 +1,12 @@
 import './index.css'; 
 
-export default function DesignedButton(props) {
+export default function KurtTest(props) {
     return(
         <div>
             <button onClick={props.clickFunction} style={styles.button}>
                 <div style={styles.imageContainer}>
                     <img src="/uiElements/buttonBlue.png" alt="Buy Factory" style={styles.image} />
-                <div style={styles.textOverlay}>{props.text}</div>
+                <div style={styles.textOverlay}>Buy Factory</div>
                 </div>
             </button>
         </div>
