@@ -78,6 +78,21 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* .buy-facility-button {
+  background-image: url("../public/uiElements/buttonBlue.png");
+} */
+
+.buy-facility-button {
+  background-image: url("../public/uiElements/buttonBlue.png");
+  background-size: cover; 
+  background-repeat: no-repeat; 
+  background-position: top left;
+  /* width: 100px; 
+  height: 50px;  */
+  border: none; 
+  padding: 0; 
+}
+
 .header {
   height: 10vh; 
   display: flex; 
