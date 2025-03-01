@@ -91,6 +91,8 @@ button:focus-visible {
 .footer {
   height: 15vh; 
   display: flex; 
+  justify-content: space-between;
+  gap: 1rem; 
 }
 
 .footer-box {
@@ -99,8 +101,86 @@ button:focus-visible {
 
 .year {
   margin-left: 2rem;
+  flex-basis: 10%;
 }
 
 .move-on {
   margin-right: 2rem;
+  flex-basis: 10%;
+}
+
+.money {
+  flex-basis: 10%;
+}
+
+.ff-reserves-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ff-reserves-bar-sections {
+  height: 1rem;
+}
+
+.ff-reserves-bar-section1 {
+  background-color: rgb(34 197 94);
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+
+.ff-reserves-bar-section2 {
+  background-color: rgb(239 68 68);
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+
+.ff-reserves-container {
+  display: flex; 
+  gap: 1rem; 
+  flex-basis: 30%;
+}
+
+.demand-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.demand-bar-sections {
+  height: 1rem;
+}
+
+.demand-bar-section1 {
+  background-color: rgb(34 197 94);
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+
+.demand-bar-section2 {
+  background-color: rgb(239 68 68);
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+
+.demand-container {
+  display: flex; 
+  gap: 1rem; 
+  flex-basis: 30%;
+}
+
+.transaction {
+  display: flex; 
+}
+
+.buy-sell-facilities {
+  display: flex; 
+  justify-content: space-evenly;
+  gap: 1rem; 
+  margin-left: 1rem; 
+  flex-basis: 75%;
+}
+
+.research {
+  flex-basis: 25%; 
 }
