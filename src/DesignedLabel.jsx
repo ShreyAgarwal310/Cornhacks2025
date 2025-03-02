@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './index.css';
 
-export default function KurtTest(props) {
+export default function DesignedLabel(props) {
   
 
   const styles = {
@@ -22,12 +22,12 @@ export default function KurtTest(props) {
     textOverlay: {
       position: 'absolute',
       top: '50%',
-      left: '40%',
-      transform: 'translate(-35%, -50%)',
+      left: '10%',
+      transform: 'translate(-0%, -53%)',
       color: 'white',
-      fontSize: '20px',
+      fontSize: '18px',
       fontWeight: 'bold',
-      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+    //   textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
     },
   };
 
@@ -35,7 +35,6 @@ export default function KurtTest(props) {
     <div>
       <button style={styles.button}>
         <div style={styles.imageContainer}>
-          {/* Change the image source based on the button state */}
           <img
             src={`/uiElements/label${props.type}.png`}
             alt="img not found"

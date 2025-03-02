@@ -1,19 +1,8 @@
 import './index.css'; 
+import React, { useState } from 'react';
 
 export default function DesignedButton(props) {
-    return(
-        <div>
-            <button onClick={props.clickFunction} style={styles.button}>
-                <div style={styles.imageContainer}>
-                    <img src={`/uiElements/button${props.type}.png`} alt="img not found" style={styles.image} />
-                <div style={styles.textOverlay}>{props.text}</div>
-                </div>
-            </button>
-        </div>
-    );
-}
-
-const styles = {
+  const styles = {
     button: {
       background: 'none',
       border: 'none',
@@ -26,20 +15,51 @@ const styles = {
     },
     image: {
       // width: '100px', // Adjust the size of the image
-      width: '18vw',
-      height: '3.125rem',
+      // width: '12vw',
+      width: props.research ? '12vw' : '12vw', 
+      height: props.research ? '4rem' : '4rem', 
+      // height: '4rem',
       // height: 'auto',
     },
     textOverlay: {
       position: 'absolute',
-      top: '50%', // Center vertically
-      left: '50%', // Center horizontally
-      transform: 'translate(-50%, -50%)', // Adjust for exact centering
-color: 'white', // Text color
-fontSize: '16px', // Text size
-fontWeight: 'bold', // Text weight
-textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', // Optional: Add a shadow for better readability
+      top: '50%', 
+      left: '50%', 
+      transform: 'translate(-50%, -55%)', 
+color: 'white', 
+// fontSize: '16px', // Text size
+fontSize: props.research ? '12px' : '16px', 
+fontWeight: 'bold', 
+// textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
 },
 };
+
+const [isPressed, setIsPressed] = useState(false); // State to track if the button is pressed
+
+  const handleClick = () => {
+    setIsPressed(true); // Set the button to "pressed" state
+    setTimeout(() => {
+      setIsPressed(false); // Revert the button to "unpressed" state after a delay
+    }, 200); // Adjust the delay (in milliseconds) as needed
+
+    // Call the provided click function
+    if (props.clickFunction) {
+      props.clickFunction();
+    }
+  };
+  
+    return(
+        <div>
+            <button onClick={handleClick} style={styles.button}>
+                <div style={styles.imageContainer}>
+                    <img src={`/uiElements/button${props.type}${isPressed ? 'P' : ''}.png`} alt="img not found" style={styles.image} />
+                <div style={styles.textOverlay}>{props.text}</div>
+                </div>
+            </button>
+        </div>
+    );
+
+    
+}
 
 

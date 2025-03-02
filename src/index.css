@@ -24,8 +24,9 @@
 }
 
 body {
-  font-family: system-ui;
+  font-family: "Silkscreen", sans;
   margin: 0;
+  background-color: rgb(70, 70, 70);
 }
 
 :root {
@@ -130,6 +131,8 @@ button:focus-visible {
   height: 10vh; 
   display: flex; 
   justify-content: space-between;
+  /* background-color: rgb(B1, EE, FF); */
+  background-color: rgb(177, 238, 255);
 } 
 
 .body {
@@ -141,6 +144,7 @@ button:focus-visible {
   display: flex; 
   justify-content: space-between;
   gap: 1rem; 
+  
 }
 
 .footer-box {
@@ -150,10 +154,10 @@ button:focus-visible {
 .year {
   margin-left: 2rem;
   flex-basis: 10%;
-  background-image: url("/uiElements/labelBlue.png");
+  /* background-image: url("/uiElements/labelBlue.png");
   background-size: cover; 
   background-repeat: no-repeat; 
-  background-position: top left;
+  background-position: top left; */
   
   border: none; 
   padding: 0; 
@@ -171,7 +175,7 @@ button:focus-visible {
 .ff-reserves-bar {
   display: flex;
   align-items: center;
-  width: 100%;
+  width: 50%;
 }
 
 .ff-reserves-bar-sections {
@@ -199,7 +203,7 @@ button:focus-visible {
 .demand-bar {
   display: flex;
   align-items: center;
-  width: 100%;
+  width: 75%;
 }
 
 .demand-bar-sections {
@@ -239,6 +243,43 @@ button:focus-visible {
 .research {
   flex-basis: 25%; 
   display: flex; 
+  gap: 1rem; 
+}
+
+.research-button-group {
+  display: flex; 
   flex-direction: column;
   gap: 1rem; 
 }
+
+.modal {
+  width: 50vw; 
+  position: relative;
+  background-color: rgba(0, 0, 0, 0);
+  border-color: rgba(0, 0, 0, 0);
+}
+
+.modal-text {
+  position: absolute;
+  top: 10rem; 
+  left: 10px; 
+  font-size: 2rem;
+  /* color: white;  */
+  /* background-color: rgba(0, 0, 0, 0.5);  */
+  padding: 7rem; 
+}
+
+/* .modal {
+  width: 50vw; 
+} */
+
+/* .modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw; 
+  height: 100vh; 
+  background-image: url('../public/uiElements/newspaper.png');
+  background-size: cover;
+  background-position: center;
+} */
