@@ -101,7 +101,7 @@ export default function App() {
 
   // Initial Game State
   const [money, setMoney] = useState(10000); // Adjusted starting money
-  const [userMoneyPerYear, setMoneyPerYear] = useState(1000); // Adjusted yearly income //10000
+  const [userMoneyPerYear, setMoneyPerYear] = useState(1000); // Adjusted yearly income
   const [year, setYear] = useState(2000);
   
   // Energy System State
@@ -124,7 +124,8 @@ export default function App() {
       multiplier: 1, 
       power: 12, // Greatly increased power to make them initially very attractive
       fossilUse: 1.5, // Increased fossil use to deplete reserves faster
-      emissions: 2.5 // Increased emissions for later consequences
+      emissions: 2.5,
+      sell: 1500 // Increased emissions for later consequences
     },
     oilPlant: { 
       count: 5, 
@@ -132,7 +133,8 @@ export default function App() {
       multiplier: 1, 
       power: 9, // Greatly increased power to make them initially very attractive
       fossilUse: 1.2, // Increased fossil use to deplete reserves faster
-      emissions: 1.8 // Increased emissions for later consequences
+      emissions: 1.8,
+      sell: 500 // Increased emissions for later consequences
     },
     
     // Clean energy - now more expensive initially with lower initial power
@@ -141,21 +143,24 @@ export default function App() {
       cost: 12000, // Significantly more expensive initially
       multiplier: 1, 
       power: 15, // Good power but expensive up front
-      emissions: 0 
+      emissions: 0,
+      sell: 7500
     },
     solarFarm: { 
       count: 2, 
       cost: 8000, // Much more expensive initially // 800
       multiplier: 1, 
       power: 0.5, // Lower initial power
-      emissions: 0 
+      emissions: 0,
+      sell: 5000
     },
     windFarm: { 
       count: 2, 
       cost: 10000, // Much more expensive initially // 1200
       multiplier: 1, 
       power: 0.8, // Lower initial power
-      emissions: 0 
+      emissions: 0,
+      sell: 7500
     },
     
     // Late-game superpower
@@ -164,7 +169,8 @@ export default function App() {
       cost: 35000, // Extremely expensive as a late-game goal
       multiplier: 1, 
       power: 100, // Doubled power to make it extremely valuable when achieved
-      emissions: 0 
+      emissions: 0,
+      sell: 20000
     }
   });
 
@@ -292,6 +298,8 @@ export default function App() {
     setYear(prev => prev + 1);
     setActionsTakenInYear(0);
   }
+
+  
   
   
 
@@ -307,7 +315,16 @@ export default function App() {
       return;
     }
     
-    // If buying a fossil fuel plant, update the cumulative count
+    // Prevent buying fossil fuel plants if reserves are 0
+    if ((type === 'coalPlant' || type === 'oilPlant') && fossilFuelReserves === 0) {
+      return;
+    }
+
+    if(money < facilities[type].cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facilities[type].count - 1)) {
+      return;
+    }
+    
+    // Update cumulative count for fossil fuel plants (if applicable)
     if (type === 'coalPlant') {
       setCumulativeCoalPlants(prev => prev + 1);
     } else if (type === 'oilPlant') {
@@ -317,9 +334,11 @@ export default function App() {
     setFacilities(prev => {
       const facility = prev[type];
       const effectiveBuyCost = facility.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facility.count - 1);
-      if (money < effectiveBuyCost) return prev;
-      
-      setMoney(money - effectiveBuyCost);
+      // Subtract money using a functional update:
+      setMoney(prevMoney => {
+        if (prevMoney < effectiveBuyCost) return prevMoney;
+        return prevMoney - effectiveBuyCost;
+      });
       const newCount = facility.count + 1;
       return {
         ...prev,
@@ -331,8 +350,17 @@ export default function App() {
       };
     });
     
-    setActionsTakenInYear(actionsTakenInYear + 1);
+    setActionsTakenInYear(prev => prev + 1);
     yearlyUpdates();
+  }
+  
+  function getSaturation() {
+     if(2 / (totalEmissions/150.0)>1){
+       return 1;
+    } else{
+     return 2 / (totalEmissions/150.0);
+     }
+    
   }
   
   
@@ -340,27 +368,37 @@ export default function App() {
     if (actionsTakenInYear >= ACTION_LIMIT_PER_YEAR) {
       return;
     }
+  
+    // Get the current facility data
+    const facility = facilities[type];
+    const sellPrice = facilities[type].sell;
+  
+    // Calculate the effective sell price
+    const effectiveSellPrice = sellPrice - 1000;
     
-    setFacilities(prev => {
-      const facility = prev[type];
-      if (facility.count <= 0) return prev;
-
-      const effectiveSellPrice = facility.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facility.count - 1) * SELL_FRACTION;
-      setMoney(prevMoney => prevMoney + effectiveSellPrice);
-      const newCount = facility.count - 1;
+    // Update money first
+    setMoney(prevMoney => prevMoney + effectiveSellPrice);
+  
+    // Update the facility count and multiplier
+    setFacilities(prevFacilities => {
+      const currentFacility = prevFacilities[type];
+      const newCount = currentFacility.count - 1;
       return {
-        ...prev,
+        ...prevFacilities,
         [type]: {
-          ...facility,
+          ...currentFacility,
           count: newCount,
-          multiplier: newCount === 0 ? 1 : Math.pow(PREVIOUS_BUY_MULTIPLIER, newCount)
         }
       };
     });
-
-    setActionsTakenInYear(actionsTakenInYear + 1);
+  
+    // Use functional update to ensure the latest state
+    setActionsTakenInYear(prev => prev + 1);
+  
+    // Advance the game year with any additional yearly updates
     yearlyUpdates();
   }
+  
 
   useEffect(() => {
     const fossilLoad = 
@@ -490,7 +528,7 @@ export default function App() {
     
   return (
     <div>
-      <div className='header'>
+      <div className='header' style={{ filter: `saturate(${getSaturation()})` }}>
         <h2>Year: {year}</h2>
         <DesignedButton 
           clickFunction={() => yearlyUpdates()} 
@@ -524,21 +562,16 @@ export default function App() {
           </div>
         </div>
         
-        <div className='stats-container'>
+        {/* <div className='stats-container'>
           <p>Population: {Math.round(population)} mil</p>
           <p>Population Change: {population - INITIAL_POPULATION} mil</p>
           <p>Last Year's Emissions: {Math.round(lastYearEmissions)}</p>
           <p>Total Emissions: {Math.round(totalEmissions)}</p>
-        </div>
+        </div> */}
 
       </div>
 
-      {/* <dialog ref={dialogRef} className='modal'>
-        <img src={'/public/uiElements/newspaper.png'} width="85%" height="50%"></img>
-        {(year == 2000) ? <p className='modal-text-instructions'>{instructions}</p> : <p className='modal-text'>{event}</p>}
-        {(year != 2000) && <p className='modal-text-dumb-event'>{dumbEvent}</p>}
-        <button onClick={() => dialogRef.current.close()}>Close</button>
-      </dialog> */}
+    
 
       <dialog ref={dialogRef} className='modal'>
         <img src={'/public/uiElements/newspaper.png'} width="85%" height="50%"></img>
@@ -552,13 +585,20 @@ export default function App() {
       </dialog>
 
       <div style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }} className='body'>
-        <img src={`/fossilFuelBackgroundImages/oil${determineImage("oil")}.gif`} width="16%" height="100%" />
-        <img src={`/fossilFuelBackgroundImages/coal${determineImage("coal")}.gif`} width="13%" height="100%" />
-        <img src={`/renewableBackgroundImages/town${determineImage("year")}.png`} width="37%" height="100%" />
-        <img src={`/renewableBackgroundImages/solar${determineImage("solar")}.gif`} width="12%" height="100%" />
-        <img src={`/renewableBackgroundImages/nuke${determineImage("nuclear")}`} width="5%" height="100%" />
-        <img src={`/renewableBackgroundImages/wind${determineImage("wind")}.gif`} width="17%" height="100%" />
+      {/* style={{ filter: `saturate(${getSaturation()})` }} */}
+        <img src={`/fossilFuelBackgroundImages/oil${determineImage("oil")}.gif`} width="16%" height="100%" style={{ filter: `saturate(${getSaturation()})` }} />
+        <img src={`/fossilFuelBackgroundImages/coal${determineImage("coal")}.gif`} width="13%" height="100%" style={{ filter: `saturate(${getSaturation()})` }}/>
+        <img src={`/renewableBackgroundImages/town${determineImage("year")}.png`} width="37%" height="100%" style={{ filter: `saturate(${getSaturation()})` }}/>
+        <img src={`/renewableBackgroundImages/solar${determineImage("solar")}.gif`} width="12%" height="100%" style={{ filter: `saturate(${getSaturation()})` }}/>
+        <img src={`/renewableBackgroundImages/nuke${determineImage("nuclear")}`} width="5%" height="100%" style={{ filter: `saturate(${getSaturation()})` }}/>
+        <img src={`/renewableBackgroundImages/wind${determineImage("wind")}.gif`} width="17%" height="100%" style={{ filter: `saturate(${getSaturation()})` }}/>
       </div>
+      <div className='stats-container'>
+          <p>Population: {Math.round(population)} mil</p>
+          <p>Population Change: {population - INITIAL_POPULATION} mil</p>
+          <p>Last Year's Emissions: {Math.round(lastYearEmissions)}</p>
+          <p>Total Emissions: {Math.round(totalEmissions)}</p>
+        </div>
       
 
 
@@ -575,9 +615,7 @@ export default function App() {
           { facilities.coalPlant.count > 0 && (
             <DesignedButton 
               clickFunction={() => sellFacility('coalPlant')} 
-              text={`Sell (+$${new Intl.NumberFormat("en-US").format(
-                Math.round(facilities.coalPlant.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facilities.coalPlant.count - 1) * SELL_FRACTION)
-              )})`}
+              text={`Sell (+$1,500)`}
               type={"Orange"}
             />
         )}
@@ -594,9 +632,7 @@ export default function App() {
             { facilities.oilPlant.count > 0 && (
               <DesignedButton 
                 clickFunction={() => sellFacility('oilPlant')} 
-                text={`Sell (+$${new Intl.NumberFormat("en-US").format(
-                  Math.round(facilities.oilPlant.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facilities.oilPlant.count - 1) * SELL_FRACTION)
-                )})`}
+                text={`Sell (+$500)`}
                 type={"Orange"}
               />
           )}
@@ -612,9 +648,7 @@ export default function App() {
               { facilities.solarFarm.count > 0 && (
                 <DesignedButton 
                   clickFunction={() => sellFacility('solarFarm')} 
-                  text={`Sell (+$${new Intl.NumberFormat("en-US").format(
-                    Math.round(facilities.solarFarm.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facilities.solarFarm.count - 1) * SELL_FRACTION)
-                  )})`}
+                  text={`Sell (+$5,000)`}
                   type={"Orange"}
                 />
             )}
@@ -630,9 +664,7 @@ export default function App() {
                 { facilities.windFarm.count > 0 && (
                   <DesignedButton 
                     clickFunction={() => sellFacility('windFarm')} 
-                    text={`Sell (+$${new Intl.NumberFormat("en-US").format(
-                      Math.round(facilities.windFarm.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facilities.windFarm.count - 1) * SELL_FRACTION)
-                    )})`}
+                    text={`Sell (+$7,500)`}
                     type={"Orange"}
                   />
               )}
@@ -648,9 +680,7 @@ export default function App() {
                   { facilities.nuclearPlant.count > 0 && (
                     <DesignedButton 
                       clickFunction={() => sellFacility('nuclearPlant')} 
-                      text={`Sell (+$${new Intl.NumberFormat("en-US").format(
-                        Math.round(facilities.nuclearPlant.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facilities.nuclearPlant.count - 1) * SELL_FRACTION)
-                      )})`}
+                      text={`Sell (+$7,500)`}
                       type={"Orange"}
                     />
                 )}
@@ -667,9 +697,7 @@ export default function App() {
                   { facilities.fusion.count > 0 && (
                     <DesignedButton 
                       clickFunction={() => sellFacility('fusion')} 
-                      text={`Sell (+$${new Intl.NumberFormat("en-US").format(
-                        Math.round(facilities.fusion.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facilities.fusion.count - 1) * SELL_FRACTION)
-                      )})`}
+                      text={`Sell (+$20,000)`}
                       type={"Orange"}
                     />
                 )}

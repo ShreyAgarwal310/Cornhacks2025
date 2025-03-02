@@ -288,11 +288,14 @@ button:focus-visible {
 .modal-text {
   position: absolute;
   top: 8rem; 
-  left: 10px; 
+  left: -10px; 
   font-size: 2rem;
   /* color: white;  */
   /* background-color: rgba(0, 0, 0, 0.5);  */
-  padding: 5rem; 
+  padding: 4rem; 
+  padding-left: 6rem; 
+  padding-top: 6rem;
+  padding-right: 10rem; 
 }
 
 .modal-text-instructions {
@@ -327,7 +330,9 @@ button:focus-visible {
   /* top: 10px; */
   right: 10px;
   /* background: rgba(255,255,255,0.8); */
-  background: rgb(177, 238, 255); 
+  /* background: rgb(177, 238, 255);  */
+  text-align: right;
+  top: 10px;
   padding: 0.5rem;
   border-radius: 5px;
   display: flex;
