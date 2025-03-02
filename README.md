@@ -1,6 +1,6 @@
 # Race To 2100
 
-https://race-to-2100.netlify.app/ 
+https://race-to-2100.netlify.app/ (Visuals are a bit broken) 
 
 This resource management game takes the user on a journey from the year 2000 to 2100. The game allows the player to allocate their funds towards different types of energy sources.
 
