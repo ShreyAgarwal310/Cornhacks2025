@@ -28,8 +28,8 @@ export default function DesignedButton(props) {
       transform: 'translate(-50%, -55%)', 
 color: 'white', 
 // fontSize: '16px', // Text size
-fontSize: props.research ? '12px' : '16px', 
-fontWeight: 'bold', 
+fontSize: props.research ? '12px' : '17px', 
+ 
 // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
 },
 };

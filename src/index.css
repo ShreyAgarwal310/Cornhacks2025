@@ -25,8 +25,8 @@
 
 body {
   font-family: "Silkscreen", sans;
+  
   margin: 0;
-  background-color: rgb(70, 70, 70);
 }
 
 :root {
@@ -65,7 +65,7 @@ button {
   padding: 0.6em 1.2em;
   height: 3rem; 
   font-size: 1em;
-  font-weight: 500;
+  /*font-weight: 500;*/
   font-family: inherit;
   /* background-color: #1a1a1a; */
   cursor: pointer;
@@ -123,7 +123,6 @@ button:focus-visible {
   transform: translate(-50%, -50%);
   color: white; 
   font-size: 16px; 
-  font-weight: bold; 
   pointer-events: none; 
 }
 
@@ -133,22 +132,32 @@ button:focus-visible {
   justify-content: space-between;
   /* background-color: rgb(B1, EE, FF); */
   background-color: rgb(177, 238, 255);
+  position: relative
 } 
 
 .body {
   height: 65vh; 
 }
 
+
+
 .footer {
-  height: 15vh; 
+  height: 25vh;
   display: flex; 
   justify-content: space-between;
   gap: 1rem; 
+  color: rgb(215, 197, 197);
+
   
+  background-image: url("/uiElements/footerBackground.png"); 
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  font-weight: 900;   
+   
 }
 
 .footer-box {
-  width: 50vw; 
+   width: 50vw;  
 }
 
 .year {
@@ -173,9 +182,12 @@ button:focus-visible {
 }
 
 .ff-reserves-bar {
+  position: absolute;
+  top: 40px;
+  right: 612px;
   display: flex;
   align-items: center;
-  width: 50%;
+  width: 20%;
 }
 
 .ff-reserves-bar-sections {
@@ -195,15 +207,19 @@ button:focus-visible {
 }
 
 .ff-reserves-container {
-  display: flex; 
+  display: absolute; 
+  top: 30px;
   gap: 1rem; 
   flex-basis: 30%;
 }
 
 .demand-bar {
+  position: absolute;
+  top: 40px;
+  right: 300px;
   display: flex;
   align-items: center;
-  width: 75%;
+  width: 20%;
 }
 
 .demand-bar-sections {
@@ -223,10 +239,12 @@ button:focus-visible {
 }
 
 .demand-container {
-  display: flex; 
+  display: absolute;
+  right:100px; 
   gap: 1rem; 
   flex-basis: 30%;
 }
+
 
 .transaction {
   display: flex; 
@@ -249,6 +267,7 @@ button:focus-visible {
 .research-button-group {
   display: flex; 
   flex-direction: column;
+  width: 50%;
   gap: 1rem; 
 }
 
@@ -268,6 +287,20 @@ button:focus-visible {
   /* background-color: rgba(0, 0, 0, 0.5);  */
   padding: 7rem; 
 }
+
+.stats-container {
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  background: rgba(255,255,255,0.8);
+  padding: 0.5rem;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+
 
 /* .modal {
   width: 50vw; 

@@ -30,55 +30,130 @@ export default function App() {
     ["Pipeline Cyberattack: Hackers disrupt oil supply chains. (+ fossil fuel prices)", "fossil fuel prices"], 
     ["Extreme Drilling Costs: Deeper, harder-to-reach oil fields drive up extraction costs. (+ fossil fuel prices)", "fossil fuel prices"]
   ];
-  
+
   const [event, setEvent] = useState("");
 
-  const PREVIOUS_BUY_MULTIPLIER = 1.05;
-  const RESEARCH_COST_MULTIPLIER = 1.10;
-  const FACILITY_DISCOUNT = 0.90;
-  const FUSION_THRESHOLD = 3;
-  const SELL_FRACTION = 0.8;
-  const NEW_POPULATION_PER_YEAR = 0.36;
-  const EVENT_POWER_DEMAND_INCREASE = 20;
-  const EVENT_COAL_PRICE_INCREASE = 200;
-  const EVENT_OIL_PRICE_INCREASE = 50;
+  // Action Limit System
+  const ACTION_LIMIT_PER_YEAR = 3; 
+  const [actionsTakenInYear, setActionsTakenInYear] = useState(0); 
+  
+  // Buy/Sell Constants
+  const PREVIOUS_BUY_MULTIPLIER = 1.08; // Increased to make scaling costs more punishing
+  const RESEARCH_COST_MULTIPLIER = 1.25; // Increased to make research progression more challenging
+  const FACILITY_DISCOUNT = 0.80; // Increased discount to make research more valuable
+  const FUSION_THRESHOLD = 5; // Increased to make fusion harder to unlock
+  const SELL_FRACTION = 0.6; // Reduced to discourage facility selling
+  
+  // Population & Demand Constants
+  const NEW_POPULATION_PER_YEAR = 1; // Increased for faster population growth
+  const POPULATION_POWER_DEMAND_MULTIPLIER = 0.5; // Increased for higher demand pressure
+  const MAX_RESERVES = 100; // Slightly increased initial reserves
+  
+  // Event Constants
+  const EVENT_POWER_DEMAND_INCREASE = 35; // Increased for more impactful events
+  const EVENT_COAL_PRICE_INCREASE = 500; // Significantly increased to punish fossil fuels later
+  const EVENT_OIL_PRICE_INCREASE = 200; // Significantly increased to punish fossil fuels later
+  const EVENT_FREQUENCY = 4; // More frequent events
+  
+  // Facility Image Thresholds
   const FACILITY_FIRST_IMAGE_THRESHOLD = 3;
   const FACILITY_SECOND_IMAGE_THRESHOLD = 6;
   const FACILITY_THIRD_IMAGE_THRESHOLD = 9;
   const TOWN_FIRST_IMAGE_THRESHOLD = 2025;
   const TOWN_SECOND_IMAGE_THRESHOLD = 2050;
   const TOWN_THIRD_IMAGE_THRESHOLD = 2075;
-  const POPULATION_POWER_DEMAND_MULTIPLIER = 0.4;
-  const MAX_RESERVES = 90;
-  const EVENT_FREQUENCY = 5;
-
-  const [money, setMoney] = useState(100000);
-  const [userMoneyPerYear, setMoneyPerYear] = useState(10);
+  
+  // Initial Game State
+  const [money, setMoney] = useState(120000); // Adjusted starting money
+  const [userMoneyPerYear, setMoneyPerYear] = useState(10000); // Adjusted yearly income
   const [year, setYear] = useState(2000);
   const [atWar, setAtWar] = useState(false);
-
-  const [powerDemand, setPowerDemand] = useState(133.2);
+  
+  // Energy System State
+  const [powerDemand, setPowerDemand] = useState(165); // Increased initial demand
   const [fossilFuelLoad, setFuelLoad] = useState(0);
   const [cleanEnergyLoad, setCleanEnergyLoad] = useState(0);
   const [fossilFuelReserves, setFossilFuelReserves] = useState(MAX_RESERVES);
   const [population, setPopulation] = useState(330);
   const [totalEmissions, setTotalEmissions] = useState(0);
+  const [lastYearEmissions, setLastYearEmissions] = useState(0);
   const [fusionUnlocked, setFusionUnlocked] = useState(false);
-
+  
+  // Facility Properties
   const [facilities, setFacilities] = useState({
-    coalPlant: { count: 10, cost: 1000, multiplier: 1, power: 6, fossilUse: 1, emissions: 1 },
-    oilPlant: { count: 8, cost: 500, multiplier: 1, power: 5, fossilUse: 0.8, emissions: 0.8 },
-    nuclearPlant: { count: 3, cost: 6000, multiplier: 1, power: 10, emissions: 0 },
-    solarFarm: { count: 2, cost: 50, multiplier: 1, power: 0.5, emissions: 0 },
-    windFarm: { count: 2, cost: 150, multiplier: 1, power: 1, emissions: 0 },
-    fusion: { count: 0, cost: 10000, multiplier: 1, power: 100, emissions: 0 }
+    // Fossil fuels - now significantly cheaper but with higher long-term costs
+    coalPlant: { 
+      count: 10, 
+      cost: 600, // Much cheaper initial cost to make them very tempting
+      multiplier: 1, 
+      power: 12, // Greatly increased power to make them initially very attractive
+      fossilUse: 1.5, // Increased fossil use to deplete reserves faster
+      emissions: 2.5 // Increased emissions for later consequences
+    },
+    oilPlant: { 
+      count: 8, 
+      cost: 350, // Much cheaper initial cost to make them very tempting
+      multiplier: 1, 
+      power: 9, // Greatly increased power to make them initially very attractive
+      fossilUse: 1.2, // Increased fossil use to deplete reserves faster
+      emissions: 1.8 // Increased emissions for later consequences
+    },
+    
+    // Clean energy - now more expensive initially with lower initial power
+    nuclearPlant: { 
+      count: 2, 
+      cost: 12000, // Significantly more expensive initially
+      multiplier: 1, 
+      power: 15, // Good power but expensive up front
+      emissions: 0 
+    },
+    solarFarm: { 
+      count: 2, 
+      cost: 800, // Much more expensive initially
+      multiplier: 1, 
+      power: 0.5, // Lower initial power
+      emissions: 0 
+    },
+    windFarm: { 
+      count: 2, 
+      cost: 1200, // Much more expensive initially
+      multiplier: 1, 
+      power: 0.8, // Lower initial power
+      emissions: 0 
+    },
+    
+    // Late-game superpower
+    fusion: { 
+      count: 0, 
+      cost: 35000, // Extremely expensive as a late-game goal
+      multiplier: 1, 
+      power: 200, // Doubled power to make it extremely valuable when achieved
+      emissions: 0 
+    }
   });
-
+  
+  // Research State - Now research provides better power improvements for renewables
   const [research, setResearch] = useState({
-    solarFarm: { count: 0, cost: 10, researchCostMultiplier: 1 },
-    windFarm: { count: 0, cost: 20, researchCostMultiplier: 1 },
-    fission: { count: 0, cost: 50, researchCostMultiplier: 1 },
-    fusion: { count: 0, cost: 100, researchCostMultiplier: 1 }
+    solarFarm: { 
+      count: 0, 
+      cost: 75, // More expensive initial research
+      researchCostMultiplier: 1 
+    },
+    windFarm: { 
+      count: 0, 
+      cost: 125, // More expensive initial research
+      researchCostMultiplier: 1 
+    },
+    fission: { 
+      count: 0, 
+      cost: 200, // More expensive to make nuclear a mid-game option
+      researchCostMultiplier: 1 
+    },
+    fusion: { 
+      count: 0, 
+      cost: 500, // Much more expensive to make fusion a significant late-game investment
+      researchCostMultiplier: 1 
+    }
   });
 
   const actualPercentage = Math.round((fossilFuelLoad + cleanEnergyLoad) / powerDemand * 100);
@@ -88,6 +163,10 @@ export default function App() {
   ++++ RESEARCH ++++
   */
   function buyResearch(type) {
+    if (actionsTakenInYear >= ACTION_LIMIT_PER_YEAR) {
+      return;
+    }
+    
     const researchItem = research[type];
     const effectiveResearchCost = researchItem.cost * Math.pow(RESEARCH_COST_MULTIPLIER, researchItem.count);
   
@@ -129,6 +208,8 @@ export default function App() {
         }
       }));
     }
+
+    setActionsTakenInYear(actionsTakenInYear + 1);
   }
   
   /*
@@ -163,12 +244,16 @@ export default function App() {
     const emissions =
       (facilities.coalPlant.count * facilities.coalPlant.emissions) +
       (facilities.oilPlant.count * facilities.oilPlant.emissions);
-
-    setTotalEmissions(totalEmissions + emissions);
+  
+    setLastYearEmissions(emissions);
+    setTotalEmissions(prevTotal => prevTotal + emissions);
+  
     setMoney(money + userMoneyPerYear);
     setPopulation(population + NEW_POPULATION_PER_YEAR);
     setYear(year + 1);
+    setActionsTakenInYear(0);
   }
+  
 
   useEffect(() => {
     if (year % EVENT_FREQUENCY == 0 && year != 2000) {
@@ -178,6 +263,10 @@ export default function App() {
   }, [year]);
 
   function buyFacility(type) {
+    if (actionsTakenInYear >= ACTION_LIMIT_PER_YEAR) {
+      return;
+    }
+    
     setFacilities(prev => {
       const facility = prev[type];
       const effectiveBuyCost = facility.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facility.count - 1);
@@ -194,9 +283,15 @@ export default function App() {
         }
       };
     });
+
+    setActionsTakenInYear(actionsTakenInYear + 1);
   }
 
   function sellFacility(type) {
+    if (actionsTakenInYear >= ACTION_LIMIT_PER_YEAR) {
+      return;
+    }
+    
     setFacilities(prev => {
       const facility = prev[type];
       if (facility.count <= 0) return prev;
@@ -213,6 +308,8 @@ export default function App() {
         }
       };
     });
+
+    setActionsTakenInYear(actionsTakenInYear + 1);
   }
 
   function determineImage(facility) {
@@ -348,27 +445,32 @@ export default function App() {
             ></div>
           </div>
         </div>
+        <div className='stats-container'>
+          <p>Population: {Math.round(population)}</p>
+          <p>Last Year's Emissions: {Math.round(lastYearEmissions)}</p>
+          <p>Total Emissions: {Math.round(totalEmissions)}</p>
+        </div>
+
       </div>
 
-      {/* <button onClick={() => dialogRef.current.showModal()}>Open Modal</button> */}
       <dialog ref={dialogRef} className='modal'>
-        {/* <p>This is a modal using the HTML dialog element.</p> */}
         <img src={'/public/uiElements/newspaper.png'} width="100%" height="50%"></img>
         <p className='modal-text'>{event}</p>
         <button onClick={() => dialogRef.current.close()}>Close</button>
       </dialog>
 
-      {/* <div className='body'><img src='/uiElements/baseCity.png' width="100%" height="100%" /></div> */}
       <div className='body'>
-        <img src={`/fossilFuelBackgroundImages/oil${determineImage("oil")}.png`} width="16%" height="100%" />
+        <img src={`/fossilFuelBackgroundImages/oil${determineImage("oil")}.gif`} width="16%" height="100%" />
         <img src={`/fossilFuelBackgroundImages/coal${determineImage("coal")}.gif`} width="13%" height="100%" />
         <img src={`/renewableBackgroundImages/town${determineImage("year")}.png`} width="37%" height="100%" />
-        <img src={`/renewableBackgroundImages/solar${determineImage("solar")}.png`} width="12%" height="100%" />
+        <img src={`/renewableBackgroundImages/solar${determineImage("solar")}.gif`} width="12%" height="100%" />
         <img src={`/renewableBackgroundImages/nuke${determineImage("nuclear")}`} width="5%" height="100%" />
-        <img src={`/renewableBackgroundImages/wind${determineImage("wind")}.png`} width="17%" height="100%" />
+        <img src={`/renewableBackgroundImages/wind${determineImage("wind")}.gif`} width="17%" height="100%" />
       </div>
 
+
       <div className='footer'>
+        
       <div className="buy-sell-facilities">
         <div>
         <p>Coal Plants: {facilities.coalPlant.count}</p>
@@ -395,6 +497,7 @@ export default function App() {
               text={`Buy (-$${new Intl.NumberFormat("en-US").format(Math.round(facilities.oilPlant.cost * Math.pow(PREVIOUS_BUY_MULTIPLIER, facilities.oilPlant.count - 1)))})`}
               type={"Green"}
             />
+            
             { facilities.oilPlant.count > 0 && (
               <DesignedButton 
                 clickFunction={() => sellFacility('oilPlant')} 
@@ -520,7 +623,7 @@ export default function App() {
         </div>
         </div>
       </div>
-    );
     </div>
+    
   );
 }
