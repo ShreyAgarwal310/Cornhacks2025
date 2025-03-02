@@ -34,8 +34,7 @@ export default function App() {
     ["Advanced Computing Revolution: Quantum computing & data centers spike demand. (+ power demand)", "power demand"], 
     ["Population Surge: Medical breakthroughs extend lifespan, increasing long-term energy needs. (+ power demand)", "power demand"], 
     ["Water Desalination Boom: Freshwater shortages lead to massive desalination projects. (+ power demand)", "power demand"], 
-    ["Cybernetic Implants Trend: Human augmentation tech requires constant power. (+ power demand)", "power demand"], 
-    ["Interplanetary Internet: Global networks expand to space colonies. (+ power demand)", "power demand"], 
+    ["Cybernetic Implants Trend: Human augmentation tech requires constant power. (+ power demand)", "power demand"],  
     
     ["War in Ukraine Escalation: Further instability causes global fuel shortages. (+ fossil fuel prices)", "fossil fuel prices"], 
     ["Middle East Conflict: Tensions disrupt oil exports, raising costs. (+ fossil fuel prices)", "fossil fuel prices"], 
@@ -298,10 +297,6 @@ export default function App() {
     setYear(prev => prev + 1);
     setActionsTakenInYear(0);
   }
-
-  
-  
-  
 
   useEffect(() => {
     if (year % EVENT_FREQUENCY == 0 || population == 0) {
