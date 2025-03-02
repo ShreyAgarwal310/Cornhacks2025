@@ -14,12 +14,10 @@ export default function DesignedButton(props) {
       display: 'inline-block',
     },
     image: {
-      // width: '100px', // Adjust the size of the image
-      // width: '12vw',
-      width: props.research ? '12vw' : '12vw', 
+      
+      width: props.research ? '11vw' : '10vw', 
       height: props.research ? '4rem' : '4rem', 
-      // height: '4rem',
-      // height: 'auto',
+      
     },
     textOverlay: {
       position: 'absolute',
@@ -27,22 +25,22 @@ export default function DesignedButton(props) {
       left: '50%', 
       transform: 'translate(-50%, -55%)', 
 color: 'white', 
-// fontSize: '16px', // Text size
+
 fontSize: props.research ? '12px' : '17px', 
  
-// textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+
 },
 };
 
-const [isPressed, setIsPressed] = useState(false); // State to track if the button is pressed
+const [isPressed, setIsPressed] = useState(false); 
 
   const handleClick = () => {
-    setIsPressed(true); // Set the button to "pressed" state
+    setIsPressed(true); 
     setTimeout(() => {
-      setIsPressed(false); // Revert the button to "unpressed" state after a delay
-    }, 200); // Adjust the delay (in milliseconds) as needed
+      setIsPressed(false); 
+    }, 200); 
 
-    // Call the provided click function
+    
     if (props.clickFunction) {
       props.clickFunction();
     }

@@ -74,10 +74,10 @@ button {
 button:hover {
   border-color: #646cff;
 }
-button:focus,
+/* button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 
 /* .buy-facility-button {
   background-image: url("../public/uiElements/buttonBlue.png");
@@ -128,15 +128,18 @@ button:focus-visible {
 
 .header {
   height: 10vh; 
+  font-size: 900;
   display: flex; 
   justify-content: space-between;
   /* background-color: rgb(B1, EE, FF); */
   background-color: rgb(177, 238, 255);
   position: relative
+  
 } 
 
 .body {
   height: 65vh; 
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 
@@ -152,7 +155,8 @@ button:focus-visible {
   background-image: url("/uiElements/footerBackground.png"); 
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  font-weight: 900;   
+  font-weight: 200;
+  font-size: 10;   
    
 }
 
@@ -179,6 +183,7 @@ button:focus-visible {
 
 .money {
   flex-basis: 10%;
+  font-weight: 900;
 }
 
 .ff-reserves-bar {
@@ -215,7 +220,7 @@ button:focus-visible {
 
 .demand-bar {
   position: absolute;
-  top: 40px;
+  top: 40px; 
   right: 300px;
   display: flex;
   align-items: center;
@@ -240,7 +245,9 @@ button:focus-visible {
 
 .demand-container {
   display: absolute;
-  right:100px; 
+  text-align: left;
+  left: 100px; 
+  
   gap: 1rem; 
   flex-basis: 30%;
 }
@@ -280,19 +287,47 @@ button:focus-visible {
 
 .modal-text {
   position: absolute;
-  top: 10rem; 
+  top: 8rem; 
   left: 10px; 
   font-size: 2rem;
   /* color: white;  */
   /* background-color: rgba(0, 0, 0, 0.5);  */
-  padding: 7rem; 
+  padding: 5rem; 
+}
+
+.modal-text-instructions {
+  position: absolute;
+  top: 8rem; 
+  left: 1px; 
+  font-size: 0.9rem;
+  padding-left: 6rem; 
+  padding-top: 6rem;
+  padding-right: 10rem; 
+}
+.modal-text-end {
+  position: absolute;
+  top: 8rem; 
+  left: 1px; 
+  font-size: 1.9rem;
+  padding-left: 6rem; 
+  padding-top: 4rem;
+  padding-right: 10rem; 
+}
+
+.modal-text-dumb-event {
+  position: absolute;
+  top: 28rem; 
+  left: 150px; 
+  font-size: 1rem;
+  padding: 7.5rem;
 }
 
 .stats-container {
   position: absolute;
-  top: 30px;
+  /* top: 10px; */
   right: 10px;
-  background: rgba(255,255,255,0.8);
+  /* background: rgba(255,255,255,0.8); */
+  background: rgb(177, 238, 255); 
   padding: 0.5rem;
   border-radius: 5px;
   display: flex;
